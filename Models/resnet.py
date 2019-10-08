@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 from Models.senet import SENet
-
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
 
 def conv1x1(in_channels, out_channels, stride=1):

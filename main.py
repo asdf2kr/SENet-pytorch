@@ -18,9 +18,7 @@ from tqdm import tqdm
         pytorch, torchvision
         conda install -c conda-forge torchvision
 '''
-'''
-TO-do:
-'''
+
 def main():
     ''' Main function '''
     parser = argparse.ArgumentParser(description='Implement image classification on ImageNet datset using pytorch')
