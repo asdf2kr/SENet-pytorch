@@ -37,6 +37,7 @@ def main():
     parser.add_argument('--save_multi', default='trained_multi', type=str, help='trained_multi.chkpt')
     parser.add_argument('--evaluate', default=False, type=bool, help='evaluate')
     parser.add_argument('--reduction_ratio', default=16, type=int, help='reduction_ratio')
+    parser.add_argument('--use_senet', default=False, type=bool, help='useSEnet')
     args = parser.parse_args()
     args.arch = args.arch.lower()
     args.datasets = args.datasets.lower()
@@ -65,15 +66,15 @@ def main():
     print('[Info] Load the model.')
 
     if args.arch == 'resnet18':
-        model = resnet.resnet18(num_classes=num_classes, use_senet=True, ratio=args.reduction_ratio)
+        model = resnet.resnet18(num_classes=num_classes, use_senet=args.use_senet, ratio=args.reduction_ratio)
     elif args.arch == 'resnet34':
-        model = resnet.resnet34(num_classes=num_classes, use_senet=True, ratio=args.reduction_ratio)
+        model = resnet.resnet34(num_classes=num_classes, use_senet=args.use_senet, ratio=args.reduction_ratio)
     elif args.arch == 'resnet50':
-        model = resnet.resnet50(num_classes=num_classes, use_senet=True, ratio=args.reduction_ratio)
+        model = resnet.resnet50(num_classes=num_classes, use_senet=args.use_senet, ratio=args.reduction_ratio)
     elif args.arch == 'resnet101':
-        model = resnet.resnet101(num_classes=num_classes, use_senet=True, ratio=args.reduction_ratio)
+        model = resnet.resnet101(num_classes=num_classes, use_senet=args.use_senet, ratio=args.reduction_ratio)
     elif args.arch == 'resnet152':
-        model = resnet.resnet152(num_classes=num_classes, use_senet=True, ratio=args.reduction_ratio)
+        model = resnet.resnet152(num_classes=num_classes, use_senet=args.use_senet, ratio=args.reduction_ratio)
 
 
     model = model.to(device)
