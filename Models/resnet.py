@@ -15,7 +15,6 @@ class BasicBlock(nn.Module):
     expansion = 1
     def __init__(self, in_channels, hid_channels, use_senet=False, ratio=16, stride=1, downsample=None):
         super(BasicBlock, self).__init__()
-        output_size = {64: 56, 128: 28, 256:14, 512:7}
         self.conv1 = conv3x3(in_channels, hid_channels, stride)
         self.bn1 = nn.BatchNorm2d(hid_channels)
         self.relu = nn.ReLU(inplace=True)
@@ -24,7 +23,7 @@ class BasicBlock(nn.Module):
         self.downsample = downsample
 
         if use_senet:
-            self.senet = SENet(out_channels, output_size[hid_channels], ratio)
+            self.senet = SENet(out_channels, ratio)
         else:
             self.senet = None
 
@@ -54,7 +53,6 @@ class BottleneckBlock(nn.Module): # bottelneck-block, over the 50 layers.
     expansion = 4
     def __init__(self, in_channels, hid_channels, use_senet=False, ratio=16, stride=1, downsample=None):
         super(BottleneckBlock, self).__init__()
-        output_size = {64: 56, 128: 28, 256:14, 512:7}
         self.downsample = downsample
         out_channels = hid_channels * self.expansion
         self.conv1 = conv1x1(in_channels, hid_channels)
@@ -69,7 +67,7 @@ class BottleneckBlock(nn.Module): # bottelneck-block, over the 50 layers.
         self.relu = nn.ReLU(inplace=True)
 
         if use_senet:
-            self.senet = SENet(out_channels, output_size[hid_channels], ratio)
+            self.senet = SENet(out_channels, ratio)
         else:
             self.senet = None
 
@@ -168,10 +166,13 @@ class ResNet(nn.Module):
         self.conv5 = self.get_layers(block, 512, self.layers[3], stride=2)
         self.avgPool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(512 * block.expansion, num_classes)
-
-        '''
-        for m in self.modules():
-        '''
+        torch.nn.init.kaiming_normal(self.fc.weight)
+        for m in self.state_dict():
+            if isinstance(m, nn.Conv2d):
+                torch.nn.init.kaiming_normal(m.weight, mode='fan_out', nonlinearity='relu')
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
 
     def get_layers(self, block, hid_channels, n_layers, stride=1):
         downsample = None

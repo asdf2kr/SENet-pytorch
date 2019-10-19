@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 
 class SENet(nn.Module):
-    def __init__(self, in_channel, out_channel, reduction_ratio):
+    def __init__(self, in_channel, reduction_ratio):
         super(SENet, self).__init__()
-        self.globalAvgPool = nn.AvgPool2d(out_channel, stride=1)
+        self.globalAvgPool = nn.AdaptiveAvgPool2d(1)
         self.fc1 = nn.Linear(in_features=in_channel, out_features=round(in_channel/reduction_ratio))
         self.relu = nn.ReLU(inplace=True)
         self.fc2 = nn.Linear(in_features=round(in_channel/reduction_ratio), out_features=in_channel)
